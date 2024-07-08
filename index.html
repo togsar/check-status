@@ -139,7 +139,7 @@
                 case 504:
                     return "Ağ Geçidi Zaman Aşımı (Gateway Timeout)";
                 default:
-                    return "Bilinmeyen Hata";
+                    return `Bilinmeyen Hata ${status}`;
             }
         }
 
@@ -157,7 +157,7 @@
 
         // Örnek kullanım
         const urls = [
-            'https://panel.togsar.com', 
+            'https://panel.togsar.com/secure', 
             'https://sandik.togsar.com', 
             'https://office.togsar.com',
             'https://erp.togsar.com',
