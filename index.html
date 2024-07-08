@@ -4,44 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TOGSAR STATUS</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             display: flex;
-            justify-content: center;
-            align-items: center;
             flex-direction: column;
-        }
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            padding: 20px;
-            box-sizing: border-box;
+            align-items: center;
         }
         .image-container {
             width: 100%;
-            height: 50vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            height: 80vh; /* Sayfa yüksekliğinin 3/2'si */
             overflow: hidden;
             margin-bottom: 20px;
         }
         .image-container img {
             width: 100%;
             height: auto;
-            max-height: 100%;
+            display: block;
         }
         .content {
             width: 100%;
             max-width: 1200px;
             padding: 20px;
             box-sizing: border-box;
+            margin-top: -33.33vh; /* Görselin yüksekliğinin 1/3'ü kadar yukarı kaydır */
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
         .content h1 {
             text-align: center;
+            margin-top: 20px;
         }
         .content p {
             text-align: center;
@@ -66,29 +61,40 @@
         tr:hover {
             background-color: #ddd;
         }
+        .status-active {
+            background-color: #d4edda; /* Yeşil - Aktif */
+            color: #155724;
+        }
+        .status-inactive {
+            background-color: #f8d7da; /* Kırmızı - Aktif değil */
+            color: #721c24;
+        }
+        .status-error {
+            background-color: #fff3cd; /* Sarı - Hata */
+            color: #856404;
+        }
         @media (max-width: 1200px) {
-            .container {
+            .content {
                 padding: 20px;
+                margin-top: -33.33vh;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="image-container">
-            <img src="./background.png" alt="Placeholder Image">
-        </div>
-        <div class="content">
-            <h1>URL Durum Kontrolü</h1>
-            <p>Bu alan, sitelerin aktif olup olmadığını ve yanıt sürelerini kontrol eder. Aşağıdaki tablo, belirtilen URL'lerin durumunu ve yanıt sürelerini gösterir.</p>
-            <table id="statusTable">
-                <tr>
-                    <th>URL</th>
-                    <th>Durum</th>
-                    <th>Yanıt Süresi (ms)</th>
-                </tr>
-            </table>
-        </div>
+    <div class="image-container">
+        <img src="./background.png" alt="Placeholder Image">
+    </div>
+    <div class="content">
+        <h1>Site Durum Kontrolü</h1>
+        <p>Bu alan, sitelerin aktif olup olmadığını ve yanıt sürelerini kontrol eder. Aşağıdaki tablo, belirtilen URL'lerin durumunu ve yanıt sürelerini gösterir.</p>
+        <table id="statusTable">
+            <tr>
+                <th>URL</th>
+                <th>Durum</th>
+                <th>Yanıt Süresi (ms)</th>
+            </tr>
+        </table>
     </div>
 
     <script>
@@ -103,14 +109,14 @@
                 const responseTime = endTime - startTime;
 
                 if (response.ok) {
-                    addRowToTable(url, `Aktif. Durum: ${response.status}`, responseTime);
+                    addRowToTable(url, `Aktif. Durum: ${response.status}`, responseTime,'status-active');
                 } else {
-                    addRowToTable(url, `Aktif değil. Durum: ${response.status} - ${getStatusText(response.status)}`, responseTime);
+                    addRowToTable(url, `Aktif değil. Durum: ${response.status} - ${getStatusText(response.status)}`, responseTime, 'status-inactive');
                 }
             } catch (error) {
                 const endTime = performance.now();
                 const responseTime = endTime - startTime;
-                addRowToTable(url, `Ulaşılamaz. Hata: ${error}`, responseTime);
+                addRowToTable(url, `Ulaşılamaz. Hata: ${error}`, responseTime, 'status-error');
             }
         }
 
@@ -137,7 +143,7 @@
             }
         }
 
-        function addRowToTable(url, status, responseTime) {
+        function addRowToTable(url, status, responseTime, statusClass) {
             const table = document.getElementById('statusTable');
             const row = table.insertRow();
             const cell1 = row.insertCell(0);
@@ -146,27 +152,11 @@
             cell1.textContent = url;
             cell2.textContent = status;
             cell3.textContent = responseTime.toFixed(2); // Yanıt süresini milisaniye olarak göster
+            cell2.classList.add(statusClass);
         }
 
         // Örnek kullanım
-        const urls = [
-            'http://panel.togsar.com', 
-            'https://sandik.togsar.com', 
-            'https://office.togsar.com',
-            'https://erp.togsar.com',
-            'https://auto.togsar.com',
-            'https://ssh1.togsar.com',
-            'https://ssh.togsar.com',
-            'https://wsl.togsar.com',
-            'https://vnc.togsar.com',
-            'https://vpc1.togsar.com',
-            'https://vpc2.togsar.com',
-            'https://vpc3.togsar.com',
-            'https://vpc3-node1.togsar.com',
-            'https://vpc3-node2.togsar.com',
-            'https://vpc3-node3.togsar.com',
-            'https://vpc4-node1.togsar.com'
-        ];
+        const urls = ['https://example.com', 'https://google.com', 'https://nonexistentwebsite.xyz'];
         urls.forEach(url => checkWebsiteStatus(url));
     </script>
 </body>
