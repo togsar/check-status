@@ -102,7 +102,7 @@
             const startTime = performance.now();
             try {
                 const response = await fetch(url, {
-                    mode: 'no-cors' // CORS kısıtlamalarını aşmak için
+                    method: 'GET' // CORS kısıtlamalarını aşmak için
                 });
                 const endTime = performance.now();
                 const responseTime = endTime - startTime;
