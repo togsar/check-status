@@ -106,7 +106,7 @@
                 });
                 const endTime = performance.now();
                 const responseTime = endTime - startTime;
-
+                console.log(response);
                 if (response.ok) {
                     addRowToTable(url, `Aktif. Durum: ${response.status}`, responseTime,'status-active');
                 } else {
