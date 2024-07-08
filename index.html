@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOGSAR STATUS</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .image-container {
+            width: 100%;
+            height: 50vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        .image-container img {
+            width: 100%;
+            height: auto;
+            max-height: 100%;
+        }
+        .content {
+            width: 100%;
+            max-width: 1200px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .content h1 {
+            text-align: center;
+        }
+        .content p {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+            text-align: left;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #ddd;
+        }
+        @media (max-width: 1200px) {
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="image-container">
+            <img src="./background.png" alt="Placeholder Image">
+        </div>
+        <div class="content">
+            <h1>URL Durum Kontrolü</h1>
+            <p>Bu alan, sitelerin aktif olup olmadığını ve yanıt sürelerini kontrol eder. Aşağıdaki tablo, belirtilen URL'lerin durumunu ve yanıt sürelerini gösterir.</p>
+            <table id="statusTable">
+                <tr>
+                    <th>URL</th>
+                    <th>Durum</th>
+                    <th>Yanıt Süresi (ms)</th>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        async function checkWebsiteStatus(url) {
+            const startTime = performance.now();
+            try {
+                const response = await fetch(url, {
+                    method: 'HEAD', // Yalnızca başlık bilgilerini almak için
+                    mode: 'no-cors' // CORS kısıtlamalarını aşmak için
+                });
+                const endTime = performance.now();
+                const responseTime = endTime - startTime;
+
+                if (response.ok) {
+                    addRowToTable(url, `Aktif. Durum: ${response.status}`, responseTime);
+                } else {
+                    addRowToTable(url, `Aktif değil. Durum: ${response.status} - ${getStatusText(response.status)}`, responseTime);
+                }
+            } catch (error) {
+                const endTime = performance.now();
+                const responseTime = endTime - startTime;
+                addRowToTable(url, `Ulaşılamaz. Hata: ${error}`, responseTime);
+            }
+        }
+
+        function getStatusText(status) {
+            switch (status) {
+                case 400:
+                    return "Kötü İstek (Bad Request)";
+                case 401:
+                    return "Yetkisiz (Unauthorized)";
+                case 403:
+                    return "Yasak (Forbidden)";
+                case 404:
+                    return "Bulunamadı (Not Found)";
+                case 500:
+                    return "İç Sunucu Hatası (Internal Server Error)";
+                case 502:
+                    return "Kötü Ağ Geçidi (Bad Gateway)";
+                case 503:
+                    return "Hizmet Kullanılamıyor (Service Unavailable)";
+                case 504:
+                    return "Ağ Geçidi Zaman Aşımı (Gateway Timeout)";
+                default:
+                    return "Bilinmeyen Hata";
+            }
+        }
+
+        function addRowToTable(url, status, responseTime) {
+            const table = document.getElementById('statusTable');
+            const row = table.insertRow();
+            const cell1 = row.insertCell(0);
+            const cell2 = row.insertCell(1);
+            const cell3 = row.insertCell(2);
+            cell1.textContent = url;
+            cell2.textContent = status;
+            cell3.textContent = responseTime.toFixed(2); // Yanıt süresini milisaniye olarak göster
+        }
+
+        // Örnek kullanım
+        const urls = [
+            'http://panel.togsar.com', 
+            'https://sandik.togsar.com', 
+            'https://office.togsar.com',
+            'https://erp.togsar.com',
+            'https://auto.togsar.com',
+            'https://ssh1.togsar.com',
+            'https://ssh.togsar.com',
+            'https://wsl.togsar.com',
+            'https://vnc.togsar.com',
+            'https://vpc1.togsar.com',
+            'https://vpc2.togsar.com',
+            'https://vpc3.togsar.com',
+            'https://vpc3-node1.togsar.com',
+            'https://vpc3-node2.togsar.com',
+            'https://vpc3-node3.togsar.com',
+            'https://vpc4-node1.togsar.com'
+        ];
+        urls.forEach(url => checkWebsiteStatus(url));
+    </script>
+</body>
+</html>
